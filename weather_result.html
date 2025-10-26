@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Results</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background-image: url('https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .weather-card { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 25px; 
+            margin: 15px 0; 
+            border-radius: 15px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .current-weather { 
+            background: rgba(227, 242, 253, 0.95);
+            border-left: 5px solid #2196f3;
+        }
+        .forecast { 
+            background: rgba(243, 229, 245, 0.95);
+            border-left: 5px solid #9c27b0;
+        }
+        .back-btn { 
+            background: linear-gradient(135deg, #6c757d, #545b62); 
+            color: white; 
+            padding: 12px 25px; 
+            text-decoration: none; 
+            border-radius: 8px;
+            display: inline-block;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        .back-btn:hover { 
+            background: linear-gradient(135deg, #545b62, #3d4246);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h3 {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-btn">← Back to Search</a>
+    
+    <div class="weather-card current-weather">
+        <h2>📍 Current Weather in {{ data.city }}</h2>
+        
+        {% if 'main' in data.current %}
+            {% set temp = data.current['main']['temp'] %}
+            {% set feels_like = data.current['main']['feels_like'] %}
+            
+            {% if data.unit == 'C' %}
+                <p><strong>🌡️ Temperature:</strong> {{ temp }}°C</p>
+                <p><strong>🤔 Feels like:</strong> {{ feels_like }}°C</p>
+            {% else %}
+                <p><strong>🌡️ Temperature:</strong> {{ celsius_to_fahrenheit(temp) }}°F</p>
+                <p><strong>🤔 Feels like:</strong> {{ celsius_to_fahrenheit(feels_like) }}°F</p>
+            {% endif %}
+            
+            <p><strong>💧 Humidity:</strong> {{ data.current['main']['humidity'] }}%</p>
+            
+            {% if 'weather' in data.current and data.current['weather'] %}
+                <p><strong>☁️ Condition:</strong> {{ data.current['weather'][0]['description'] }}</p>
+                <p><strong>🖼️ Icon Code:</strong> {{ data.current['weather'][0]['icon'] }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="weather-card forecast">
+        <h2>📅 5-Day Forecast</h2>
+        
+        {% if 'list' in data.forecast %}
+            {% set unique_dates = [] %}
+            
+            {% for forecast_item in data.forecast['list'] %}
+                {% set date_only = forecast_item['dt_txt'].split()[0] %}
+                
+                {% if date_only not in unique_dates %}
+                    {% set _ = unique_dates.append(date_only) %}
+                    
+                    {% if unique_dates|length <= 5 %}
+                        <div style="border-bottom: 1px solid #ddd; padding: 15px 0; margin-bottom: 15px;">
+                            <h3>📆 Day {{ unique_dates|length }}: {{ date_only }}</h3>
+                            
+                            {% set forecast_main = forecast_item['main'] %}
+                            <p><strong>⬇️ Min Temp:</strong> {{ forecast_main['temp_min'] }}°C</p>
+                            <p><strong>⬆️ Max Temp:</strong> {{ forecast_main['temp_max'] }}°C</p>
+                            <p><strong>📊 Pressure:</strong> {{ forecast_main['pressure'] }} hPa</p>
+                            <p><strong>💧 Humidity:</strong> {{ forecast_main['humidity'] }}%</p>
+                            
+                            {% if forecast_item['weather'] %}
+                                {% set weather = forecast_item['weather'][0] %}
+                                <p><strong>🌤️ Weather:</strong> {{ weather['description'] }} ({{ weather['icon'] }})</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <a href="/" class="back-btn">🔍 Search Another City</a>
+</body>
+</html>

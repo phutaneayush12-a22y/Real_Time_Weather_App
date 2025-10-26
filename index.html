@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-Time Weather App</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background-image: url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2065&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .container { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 30px; 
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .form-group { margin: 20px 0; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; }
+        select, button { 
+            padding: 12px; 
+            font-size: 16px; 
+            margin: 5px; 
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 200px;
+        }
+        button { 
+            background: linear-gradient(135deg, #007bff, #0056b3); 
+            color: white; 
+            border: none; 
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover { 
+            background: linear-gradient(135deg, #0056b3, #004085);
+            transform: translateY(-2px);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .compare-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            display: inline-block;
+            transition: transform 0.2s;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .compare-btn:hover {
+            background: linear-gradient(135deg, #20c997, #17a2b8);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌤️ Real-Time Weather App</h1>
+        
+        <form action="/get_weather" method="POST">
+            <div class="form-group">
+                <label for="city">Select City:</label>
+                <select name="city" id="city" required>
+                    <option value="">Choose a city</option>
+                    {% for city in cities %}
+                    <option value="{{ city }}">{{ city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="unit">Temperature Unit:</label>
+                <select name="unit" id="unit" required>
+                    <option value="C">Celsius (°C)</option>
+                    <option value="F">Fahrenheit (°F)</option>
+                </select>
+            </div>
+            
+            <button type="submit">Get Weather</button>
+        </form>
+
+        <!-- Add this after the form closing tag -->
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/compare_cities" class="compare-btn">📊 Compare All Cities</a>
+        </div>
+    </div>
+</body>
+</html>
